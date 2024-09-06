@@ -131,19 +131,21 @@ export default function NewContentDone() {
   const jiraDescription = `${generateYaml()}\n\n${generateHBYaml()}`;
   const jiraDescriptionEncoded = safeEncodeURIComponent(jiraDescription);
 
+  const releaseWork = safeEncodeURIComponent("Release work")
+
   const ARTProjectID = "12323120"
-  const jiraUrl = `https://issues.redhat.com/secure/CreateIssueDetails!init.jspa?pid=${ARTProjectID}&priority=10200&issuetype=1&summary=${jiraSummaryEncoded}&description=${jiraDescriptionEncoded}`;
+  const ARTStoryTypeID = 17
+  // const jiraUrl = `https://issues.redhat.com/secure/CreateIssueDetails!init.jspa?pid=${ARTProjectID}&priority=10200&issuetype=1&summary=${jiraSummaryEncoded}&description=${jiraDescriptionEncoded}`;
 
   // Build the Jira URL
-  // let jiraUrl = `https://issues.redhat.com/secure/CreateIssueDetails!init.jspa&priority=10200&issuetype=1`
-  // jiraUrl += `?pid=12323120`
-  // //jiraUrl += `?issuetype=17`
-  // jiraUrl += `&summary=${jiraSummaryEncoded}`
-  // jiraUrl += `&description=${jiraDescriptionEncoded}`
+  let jiraUrl = `https://issues.redhat.com/secure/CreateIssueDetails!init.jspa?priority=10200`
+  jiraUrl += `&pid=${ARTProjectID}`
+  jiraUrl += `&issuetype=${ARTStoryTypeID}`
+  jiraUrl += `&summary=${jiraSummaryEncoded}`
+  jiraUrl += `&description=${jiraDescriptionEncoded}`
+  jiraUrl += `&component=${releaseWork}`
 
   const handleCreateJira = () => {
-
-    console.log('jiraUrl', jiraUrl)
 
     // Open the Jira creation page in a new tab with pre-filled data
     window.open(jiraUrl, '_blank');
@@ -156,11 +158,11 @@ export default function NewContentDone() {
     }}
   >
     <Box>
-      <Typography>About to make a jira using this Summary and Description</Typography>
+      <Typography  sx={{ mb: 3 }}>About to make a Jira in the <strong>ART</strong> project using the <strong>Summary</strong> and <strong>Description</strong> below:</Typography>
+      <hr />
       <Typography component="h6" sx={{ mt: 2 }}><b>Summary</b></Typography>
       <Typography>{jiraSummary}</Typography>
       <Typography component="h6" sx={{ mt: 2 }}><b>Description</b></Typography>
-      <Typography>Click "Create Jira" below if it looks good and send the Jira number to <strong>ART</strong> project and send it to <strong>@release-artists</strong> on <strong>#forum-ocp-art</strong> on Slack.</Typography>
       <pre>
         {generateYaml()}
       </pre>
@@ -168,7 +170,8 @@ export default function NewContentDone() {
       <pre>
         {generateHBYaml()}
       </pre>
-
+      <hr />
+      <Typography  sx={{ mt: 3 }}>Click "Create Jira" below if it looks good and send the Jira number to <strong>ART</strong> project and send it to <strong>@release-artists</strong> on <strong>#forum-ocp-art</strong> on Slack.</Typography>
     </Box>
     <Box sx={{ py: 2 }}>
       <Button
