@@ -22,9 +22,10 @@ export function NewContentChecklist() {
     console.log(err);
   };
   const configData = frontendConfig.newContent.checklist;
+  let requiredFlag = false
   return (<form>
     <Box>
-      <FormControlLabel control={<Checkbox {...register("check_dptp_ci", {required: true})} />}
+      <FormControlLabel control={<Checkbox {...register("check_dptp_ci", {required: requiredFlag})} />}
                         label="I have onboarded the image/rpm with DPTP/CI"/>
       <Tooltip
           title="ART manages production builds. Before an image is ready to build and ship, it will need CI managed by prow, which is a completely separate process/system and the province of the DPTP team. Click the help icon for more information.">
@@ -35,7 +36,7 @@ export function NewContentChecklist() {
       </Tooltip>
     </Box>
     <Box>
-      <FormControlLabel control={<Checkbox {...register("check_operator_hub", {required: true})} />}
+      <FormControlLabel control={<Checkbox {...register("check_operator_hub", {required: requiredFlag})} />}
                         label="Is this an Operator destined for Operator Hub? Talk to ART before proceeding."/>
       <Tooltip title={`OperatorHub, aka Marketplace, App Registry, and various other names - you are shipping your operator
                   through the marketplace/OperatorHub if it is not one of the operators deployed by the CVO (cluster version operator) but instead by OLM. Reach out to @release-artists on #forum-ocp-art`}>
@@ -45,7 +46,7 @@ export function NewContentChecklist() {
       </Tooltip>
     </Box>
     <Box>
-      <FormControlLabel control={<Checkbox {...register("check_prodsec_review", {required: true})} />}
+      <FormControlLabel control={<Checkbox {...register("check_prodsec_review", {required: requiredFlag})} />}
                         label="You have performed a threat model assessment"/>
       <Tooltip title={`ProdSec no longer performs an assessment, instead requiring a self-assessment from this link`}>
         <IconButton color="primary" aria-label="help"

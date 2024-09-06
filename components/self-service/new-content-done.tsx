@@ -4,10 +4,15 @@ import * as React from 'react';
 import { useNewContentState } from './new-content-state'
 import YAML from 'yaml'
 
+const handleJiraCreate = () => {
+  return null
+}
+
 export default function NewContentDone() {
   const { activeStep, handleBack, handleReset, inputs } = useNewContentState();
   const distgit_ns = inputs.componentType == 'rpm' ? 'rpms' : 'containers';
   let web_url = inputs.sourceRepo;
+  console.log('web_url', web_url)
   if (web_url?.endsWith('.git'))
     web_url = web_url.substring(0, web_url.length - 4);
   const repo_url = 'git@github.com:openshift-priv/' + web_url?.substring(web_url.lastIndexOf('/')+ 1) + '.git';
@@ -136,6 +141,13 @@ export default function NewContentDone() {
       <Button
         variant="contained"
         onClick={handleReset}
+        sx={{ mt: 1, mr: 1 }}
+      >
+        Create Jira
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleJiraCreate}
         sx={{ mt: 1, mr: 1 }}
       >
         Start another

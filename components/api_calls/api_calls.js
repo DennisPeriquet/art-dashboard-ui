@@ -7,7 +7,8 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 let server_endpoint = null;
 
 if (process.env.NEXT_PUBLIC_RUN_ENV === "dev") {
-    server_endpoint = "http://localhost:8080";
+    //server_endpoint = "http://localhost:8080";
+    server_endpoint = "https://art-dash-server-art-dashboard-server.apps.artc2023.pc3z.p1.openshiftapps.com"
 } else {
     server_endpoint = process.env.NEXT_PUBLIC_ART_DASH_SERVER_ROUTE;
 }
