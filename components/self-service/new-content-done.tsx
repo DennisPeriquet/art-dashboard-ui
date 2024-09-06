@@ -4,18 +4,13 @@ import * as React from 'react';
 import { useNewContentState } from './new-content-state'
 import YAML from 'yaml'
 
-const handleJiraCreate = () => {
-  return null
-}
-
 export default function NewContentDone() {
   const { activeStep, handleBack, handleReset, inputs } = useNewContentState();
   const distgit_ns = inputs.componentType == 'rpm' ? 'rpms' : 'containers';
   let web_url = inputs.sourceRepo;
-  console.log('web_url', web_url)
   if (web_url?.endsWith('.git'))
     web_url = web_url.substring(0, web_url.length - 4);
-  const repo_url = 'git@github.com:openshift-priv/' + web_url?.substring(web_url.lastIndexOf('/')+ 1) + '.git';
+  const repo_url = 'git@github.com:openshift-priv/' + web_url?.substring(web_url.lastIndexOf('/') + 1) + '.git';
   const owners = inputs.owners?.split(',').map(s => s.trim());
 
   let distgitName = inputs.deliveryRepo?.replace(/^openshift\d+\//, "");
@@ -117,17 +112,55 @@ export default function NewContentDone() {
     return YAML.stringify(result);
   };
 
+  // safeEncodeURIComponent wraps the library function, and additionally encodes
+  // square brackets.  Square brackets are NOT unsafe per RFC1738, but Google and
+  // others mishandle them.
+  const safeEncodeURIComponent = (value) => {
+    return encodeURIComponent(value)
+      .replace('[', '%5B')
+      .replace(']', '%5D')
+      .replace('{', '%7B')
+      .replace('}', '%7D')
+  }
+
+  // Create jira summary.
+  const jiraSummary = `[BuildAuto] Add OCP component - ${distgit_ns}/${distgitName}`
+  const jiraSummaryEncoded = safeEncodeURIComponent(jiraSummary);
+
+  // Combine YAMLs as Jira description
+  const jiraDescription = `${generateYaml()}\n\n${generateHBYaml()}`;
+  const jiraDescriptionEncoded = safeEncodeURIComponent(jiraDescription);
+
+  const ARTProjectID = "12323120"
+  const jiraUrl = `https://issues.redhat.com/secure/CreateIssueDetails!init.jspa?pid=${ARTProjectID}&priority=10200&issuetype=1&summary=${jiraSummaryEncoded}&description=${jiraDescriptionEncoded}`;
+
+  // Build the Jira URL
+  // let jiraUrl = `https://issues.redhat.com/secure/CreateIssueDetails!init.jspa&priority=10200&issuetype=1`
+  // jiraUrl += `?pid=12323120`
+  // //jiraUrl += `?issuetype=17`
+  // jiraUrl += `&summary=${jiraSummaryEncoded}`
+  // jiraUrl += `&description=${jiraDescriptionEncoded}`
+
+  const handleCreateJira = () => {
+
+    console.log('jiraUrl', jiraUrl)
+
+    // Open the Jira creation page in a new tab with pre-filled data
+    window.open(jiraUrl, '_blank');
+  };
+
   return (<Box
     component="div"
     sx={{
-      '& > :not(style)': { m: 2},
+      '& > :not(style)': { m: 2 },
     }}
   >
     <Box>
-      <Typography>Please<Button variant="text" target="_blank" href="https://issues.redhat.com/secure/CreateIssue!default.jspa">create a Jira ticket</Button>for the <strong>ART</strong> project and send it to <strong>@release-artists</strong> on <strong>#forum-ocp-art</strong> on Slack, with the following content:</Typography>
+      <Typography>About to make a jira using this Summary and Description</Typography>
       <Typography component="h6" sx={{ mt: 2 }}><b>Summary</b></Typography>
-      <Typography>[BuildAuto] Add OCP component - {distgit_ns}/{distgitName}</Typography>
+      <Typography>{jiraSummary}</Typography>
       <Typography component="h6" sx={{ mt: 2 }}><b>Description</b></Typography>
+      <Typography>Click "Create Jira" below if it looks good and send the Jira number to <strong>ART</strong> project and send it to <strong>@release-artists</strong> on <strong>#forum-ocp-art</strong> on Slack.</Typography>
       <pre>
         {generateYaml()}
       </pre>
@@ -140,14 +173,14 @@ export default function NewContentDone() {
     <Box sx={{ py: 2 }}>
       <Button
         variant="contained"
-        onClick={handleReset}
+        onClick={handleCreateJira}
         sx={{ mt: 1, mr: 1 }}
       >
         Create Jira
       </Button>
       <Button
         variant="contained"
-        onClick={handleJiraCreate}
+        onClick={handleReset}
         sx={{ mt: 1, mr: 1 }}
       >
         Start another

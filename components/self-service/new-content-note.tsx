@@ -9,7 +9,10 @@ export default function NewContentNote({ onSubmit }: { onSubmit?: SubmitHandler<
   const {activeStep, handleNext, handleBack, inputs, setInputs} = useNewContentState();
   const { control, register, handleSubmit, watch, getValues, setValue, formState: { errors } } = useForm<Inputs>({
     mode: 'onChange',
-    defaultValues: inputs,
+    defaultValues: {
+      ...inputs,
+      specialNote: inputs.specialNote || "This is just a sample special note from dperique, please ignore."
+    },
   });
   const onSubmitHandler: SubmitHandler<Inputs> = data => {
     setInputs(data);

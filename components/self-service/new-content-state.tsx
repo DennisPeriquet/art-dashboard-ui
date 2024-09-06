@@ -111,6 +111,7 @@ export function NewContentStateProvider({ children }: { children: ReactNode }) {
     deliveryRepoQeOwner: "dperique@redhat.com",
     deliveryRepoDocOwner: "dperique@redhat.com",
     deliveryRepoErrataWriter: "dperique@redhat.com",
+    prodSecReviewJira: "PRODSEC-9991"
   };
   const [{ activeStep, inputs }, dispatch] = useReducer(reducer, {
     activeStep: 0,
